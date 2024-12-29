@@ -27,7 +27,7 @@ def upload_file():
     
     try:
         # Run the Python scripts or perform other processing
-        result1 = subprocess.run(['python3', 'det1.py', file_path], capture_output=True, text=True)
+        result1 = "result1"#subprocess.run(['python3', 'det1.py', file_path], capture_output=True, text=True)
         result2 = "result2" #subprocess.run(['python3', 'det2.py', file_path], capture_output=True, text=True)
         result3 = "result3" #subprocess.run(['./yara-master/yara', 'test.yara', file_path], capture_output=True, text=True)
         
