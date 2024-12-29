@@ -41,16 +41,21 @@ def upload_file():
             return jsonify({"error": result2.stderr}), 500
             
         if result3.returncode != 0:
-            return jsonify({"error": result3.stderr}), 500    
+            return jsonify({"error": result3.stderr}), 500
                        
         
 
-        # Return multiple results as JSON
         return jsonify({
+        "result1": result1["stdout"],
+        "result2": result2["stdout"],
+        "result3": result3["stdout"]
+    })# Return multiple results as JSON
+       """ return jsonify({
             "result1": result1.stdout.strip(),  # Process and return result1
             "result2": result2.stdout.strip(),                # Process and return result2
             "result3": result3.stdout.strip()                 # Process and return result3
-        })
+        })"""
+
     
     except Exception as e:
         return jsonify({"error": str(e)}), 500
