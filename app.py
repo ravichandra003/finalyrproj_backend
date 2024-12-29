@@ -45,11 +45,12 @@ def upload_file():
                        
         
 
-        return jsonify({
-        "result1": result1["stdout"],
-        "result2": result2["stdout"],
-        "result3": result3["stdout"]
-    })# Return multiple results as JSON
+            return jsonify({
+            "result1": result1["stdout"],
+            "result2": result2["stdout"],
+            "result3": result3["stdout"]
+            })
+            # Return multiple results as JSON
        """ return jsonify({
             "result1": result1.stdout.strip(),  # Process and return result1
             "result2": result2.stdout.strip(),                # Process and return result2
