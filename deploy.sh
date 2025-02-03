@@ -1,17 +1,19 @@
 #!/bin/bash
 
-# Install Python dependencies (Render runs in a virtualized environment)
+# Install Python dependencies
 echo "Installing required Python packages..."
-pip install --no-cache-dir yara-python Flask flask-cors pydeep os-sys
+pip install --no-cache-dir -r requirements.txt
 
-# Define the deployment folder (if applicable)
-DEPLOY_DIR="yara-master"  # Change this to the folder where you want to run the build commands 
+# Define the build directory (change if needed)
+BUILD_DIR="yara-master"
 
-# Navigate to the deployment folder
-echo "Navigating to deployment directory: $DEPLOY_DIR"
-cd "$DEPLOY_DIR" || { echo "Error: Directory $DEPLOY_DIR not found!"; exit 1; }
+# Navigate to the build directory
+if [ -d "$BUILD_DIR" ]; then
+    echo "Navigating to build directory: $BUILD_DIR"
+    cd "$BUILD_DIR" || { echo "Error: Failed to navigate to $BUILD_DIR"; exit 1; }
+fi
 
-# Run build commands inside the deployment folder
+# Run build commands
 echo "Running bootstrap script..."
 ./bootstrap.sh
 
