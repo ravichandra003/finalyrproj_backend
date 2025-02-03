@@ -2,6 +2,7 @@
 
 # Install Python dependencies
 echo "Installing required Python packages..."
+apt-get update && apt-get install -y libfuzzy-dev
 pip install --no-cache-dir -r requirements.txt
 
 # Define the build directory (change if needed)
