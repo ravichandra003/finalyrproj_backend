@@ -1,6 +1,7 @@
 import yara
 import sys
 from collections import defaultdict
+import json
 
 def run_yara_on_sample(yara_file, sample_file):
     try:
@@ -25,14 +26,16 @@ def run_yara_on_sample(yara_file, sample_file):
         else:
             rules_triggered_without_strings.append(rule_name)
 
-    # If no rules matched, return Non-malicious
-    if not matches:
-        return {"Malicious": "No", "Matched Strings": {}}
+    # Determine malicious status
+    is_malicious = bool(matches)
 
-    # Prepare final result
-    result = {"Malicious": "Yes", "Matched Strings": rule_to_strings}
+    # Prepare the final JSON result
+    result = {
+        "Malicious": "Yes" if is_malicious else "No",
+        "Matched Strings": rule_to_strings
+    }
 
-    # If any rules triggered without strings, add that info
+    # Include rules that triggered without strings
     if rules_triggered_without_strings:
         result["Rules Triggered Without Strings"] = rules_triggered_without_strings
 
@@ -47,5 +50,6 @@ if __name__ == "__main__":
     yara_file = "test.yara"
     sample_file = sys.argv[1]
     result = run_yara_on_sample(yara_file, sample_file)
-    print(result)
 
+    # Ensure proper JSON formatting
+    print(json.dumps(result, indent=2))
