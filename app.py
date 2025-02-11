@@ -1,9 +1,10 @@
 from flask import Flask, request, jsonify
+import subprocess
 import os
 import tempfile
 from werkzeug.utils import secure_filename
 from flask_cors import CORS
-import det1  # Importing det1.py directly
+import json
 
 app = Flask(__name__)
 CORS(app)
@@ -22,7 +23,7 @@ def upload_file():
 
     if 'file' not in request.files:
         return jsonify({"error": "No file uploaded"}), 400
-
+    
     file = request.files['file']
     filename = secure_filename(file.filename)
     temp_dir = tempfile.gettempdir()
@@ -32,27 +33,23 @@ def upload_file():
     file.save(file_path)
 
     try:
-        # Call det1.py function directly instead of subprocess
-        rule_to_strings = det1.run_yara_on_sample("test.yara", file_path)
+        result1 = subprocess.run(['python3', 'det1.py', file_path], capture_output=True, text=True)
+        result2 = {"returncode": 0, "stdout": "YARA2 analysis temporarily disabled", "stderr": ""}
+        result3 = {"returncode": 0, "stdout": "YARA3 analysis temporarily disabled", "stderr": ""}
 
-        # Handle YARA errors
-        if isinstance(rule_to_strings, dict) and "error" in rule_to_strings:
-            return jsonify(rule_to_strings), 500
+        if result1.returncode != 0:
+            return jsonify({"error": f"det1.py failed: {result1.stderr.strip()}"}), 500
 
-        malicious = bool(rule_to_strings)  # True if YARA detected something
-        result1 = {
-            "Malicious": "Yes" if malicious else "No",
-            "Matched Strings": {rule: list(strings) for rule, strings in rule_to_strings.items()}
-        }
-
-        # Placeholder results for other scanners
-        result2 = "YARA2 analysis temporarily disabled"
-        result3 = "YARA3 analysis temporarily disabled"
+        # Ensure result1 is properly formatted as JSON
+        try:
+            parsed_result1 = json.loads(result1.stdout.strip())
+        except json.JSONDecodeError:
+            return jsonify({"error": "Invalid JSON response from det1.py"}), 500
 
         return jsonify({
-            "result1": result1,
-            "result2": result2,
-            "result3": result3
+            "result1": parsed_result1,
+            "result2": result2["stdout"],
+            "result3": result3["stdout"]
         })
 
     except FileNotFoundError as fnf_error:
