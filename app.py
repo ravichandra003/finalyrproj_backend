@@ -23,7 +23,7 @@ def upload_file():
 
     if 'file' not in request.files:
         return jsonify({"error": "No file uploaded"}), 400
-    
+
     file = request.files['file']
     filename = secure_filename(file.filename)
     temp_dir = tempfile.gettempdir()
@@ -44,7 +44,7 @@ def upload_file():
         try:
             parsed_result1 = json.loads(result1.stdout.strip())
         except json.JSONDecodeError:
-            return jsonify({"error": "Invalid JSON response from det1.py"}), 500
+            return jsonify({"error": "Invalid JSON response from det1.py"}), 500  # <== STRICT ERROR HANDLING
 
         return jsonify({
             "result1": parsed_result1,
