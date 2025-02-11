@@ -1,4 +1,4 @@
-import subprocess
+import yara
 import sys
 from collections import defaultdict
 
@@ -7,28 +7,28 @@ yara_file = "test.yara"
 sample_file = sys.argv[1]
 
 def run_yara_on_sample(yara_file, sample_file):
-    # Run YARA on the single sample with the -rs option to capture both the rule and the matched strings
-    result = subprocess.run(["yara", "-s", yara_file, sample_file], capture_output=True, text=True)
+    # Compile the YARA rules
+    try:
+        rules = yara.compile(filepath=yara_file)
+    except yara.SyntaxError as e:
+        print(f"YARA Syntax Error: {e}")
+        sys.exit(1)
     
-    # Parse the YARA output
-    yara_output = result.stdout.strip().split("\n")
-    
+    # Scan the sample file
+    try:
+        matches = rules.match(sample_file)
+    except yara.Error as e:
+        print(f"YARA Error: {e}")
+        sys.exit(1)
+
     # Dictionary to store the rules and their corresponding matched strings
     rule_to_strings = defaultdict(set)
-    i = 0
-    
-    # Process the YARA output
-    for line in yara_output:
-        if line:
-            parts = line.split()
-            if i == 0:
-                signature = parts[0]
-                i += 1
-            else:
-                matched_string = " ".join(parts[1:])  # Matched string
-                # Store the matched string under the corresponding rule
-                rule_to_strings[signature].add(matched_string)
-    
+
+    for match in matches:
+        rule_name = match.rule  # Get the rule name
+        matched_strings = [str(data[2]) for data in match.strings]  # Extract matched string values
+        rule_to_strings[rule_name].update(matched_strings)
+
     return rule_to_strings
 
 # Run the function and collect the distinct strings hit in the YARA rules
@@ -49,7 +49,7 @@ else:
     result.append("Malicious: No")
     result.append("Matched Strings: []")
     
-result= "\n".join(result)
+result = "\n".join(result)
 
 # Print the result
 print(result)
