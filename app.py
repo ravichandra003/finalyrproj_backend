@@ -33,8 +33,8 @@ def upload_file():
 
     try:
         result1 = subprocess.run(['python3', 'det1.py', file_path], capture_output=True, text=True)
-        result2 = subprocess.run(['python3', 'det2.py', file_path], capture_output=True, text=True)
-        result3 = {"returncode": 0, "stdout": "YARA analysis temporarily disabled", "stderr": ""} #subprocess.run(['./yara-master/yara', 'test.yara', file_path], capture_output=True, text=True)
+        result2 = {"returncode": 0, "stdout": "YARA2 analysis temporarily disabled", "stderr": ""}#subprocess.run(['python3', 'det2.py', file_path], capture_output=True, text=True)
+        result3 = {"returncode": 0, "stdout": "YARA3 analysis temporarily disabled", "stderr": ""} #subprocess.run(['./yara-master/yara', 'test.yara', file_path], capture_output=True, text=True)
 
         if result1.returncode != 0:
             return jsonify({"error": f"det1.py failed: {result1.stderr.strip()}"}), 500
