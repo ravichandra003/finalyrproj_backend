@@ -34,7 +34,7 @@ def upload_file():
 
     try:
         result1 = subprocess.run(['python3', 'det1.py', file_path], capture_output=True, text=True)
-        result2 = {"returncode": 0, "stdout": "YARA2 analysis temporarily disabled", "stderr": ""}
+        result2 = subprocess.run(["python3", "det2.py", file_path], capture_output=True, text=True)
         result3 = {"returncode": 0, "stdout": "YARA3 analysis temporarily disabled", "stderr": ""}
 
         if result1.returncode != 0:
