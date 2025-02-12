@@ -1,12 +1,12 @@
 #!/bin/bash
 set -eux
 
-# Install dependencies via a Docker-like environment
-if ! command -v yara &> /dev/null; then
-    echo "YARA is missing, installing..."
-    curl -L -o /tmp/yara.deb http://ftp.us.debian.org/debian/pool/main/y/yara/yara_4.3.1-1_amd64.deb
-    dpkg -i /tmp/yara.deb || apt-get install -f -y
-    rm /tmp/yara.deb
-fi
+echo "Updating package lists..."
+apt-get update && apt-get install -y yara
+echo "YARA installed successfully."
 
+echo "Installing Python dependencies..."
+pip install flask flask-cors yara-python
+echo "Python dependencies installed successfully."
 
+echo "Deployment script executed successfully."
