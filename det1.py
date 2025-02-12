@@ -8,7 +8,7 @@ sample_file = sys.argv[1]
 
 def run_yara_on_sample(yara_file, sample_file):
     # Run YARA on the single sample with the -rs option to capture both the rule and the matched strings
-    result = subprocess.run(["./yara64.exe", "-s", yara_file, sample_file], capture_output=True, text=True)
+    result = subprocess.run(["yara", "-s", yara_file, sample_file], capture_output=True, text=True)
     
     # Parse the YARA output
     yara_output = result.stdout.strip().split("\n")
