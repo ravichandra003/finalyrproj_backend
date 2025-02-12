@@ -25,8 +25,8 @@ def run_yara_on_sample(yara_file, sample_file):
 
         for match in matches:
             rule_name = match.rule
-            matched_strings = [data[2].decode('utf-8', 'ignore') for data in match.strings if isinstance(data[2], bytes)]
-            
+            matched_strings = [s.data.decode('utf-8', 'ignore') for s in match.strings if isinstance(s.data, bytes)]
+
             if matched_strings:
                 rule_to_strings[rule_name].update(matched_strings)
             else:
