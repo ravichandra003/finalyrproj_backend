@@ -9,5 +9,4 @@ if ! command -v yara &> /dev/null; then
     rm /tmp/yara.deb
 fi
 
-# Install Python packages
-pip install --no-cache-dir flask flask-cors yara-python
+
