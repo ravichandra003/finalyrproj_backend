@@ -35,7 +35,7 @@ def upload_file():
     try:
         result1 = subprocess.run(['python3', 'det1.py', file_path], capture_output=True, text=True)
         result2 = subprocess.run(["python3", "det2.py", file_path], capture_output=True, text=True)
-        result3 = {"returncode": 0, "stdout": "YARA3 analysis temporarily disabled", "stderr": ""}
+        result3 = "YARA3 analysis temporarily disabled"  # Static response since it's disabled
 
         if result1.returncode != 0:
             return jsonify({"error": f"det1.py failed: {result1.stderr.strip()}"}), 500
@@ -44,12 +44,12 @@ def upload_file():
         try:
             parsed_result1 = json.loads(result1.stdout.strip())
         except json.JSONDecodeError:
-            return jsonify({"error": "Invalid JSON response from det1.py"}), 500  # <== STRICT ERROR HANDLING
+            return jsonify({"error": "Invalid JSON response from det1.py"}), 500
 
         return jsonify({
             "result1": parsed_result1,
-            "result2": result2["stdout"],
-            "result3": result3["stdout"]
+            "result2": result2.stdout.strip(),  # ✅ Corrected: Used `.stdout` instead of `["stdout"]`
+            "result3": result3  # ✅ No need for indexing, it's just a string
         })
 
     except FileNotFoundError as fnf_error:
