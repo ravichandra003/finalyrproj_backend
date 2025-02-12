@@ -1,12 +1,17 @@
 #!/bin/bash
 set -eux
 
-echo "Updating package lists..."
-apt-get update && apt-get install -y yara
-echo "YARA installed successfully."
+echo "🔍 Updating system..."
+apt-get update
 
-echo "Installing Python dependencies..."
-pip install flask flask-cors yara-python
-echo "Python dependencies installed successfully."
+echo "📦 Installing YARA..."
+apt-get install -y yara
 
-echo "Deployment script executed successfully."
+echo "✅ Verifying YARA installation..."
+which yara
+yara --version
+
+echo "📦 Installing Python dependencies..."
+pip install -r requirements.txt
+
+echo "🚀 Deployment complete!"
