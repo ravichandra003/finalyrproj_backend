@@ -24,6 +24,7 @@ def upload_file():
     
     print(temp_dir)
     file.save(file_path)
+    os.chmod("yara64.exe", 0o755)  # Grant execute permission
     
     try:
         # Run the Python scripts or perform other processing
