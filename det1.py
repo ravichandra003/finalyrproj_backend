@@ -33,4 +33,4 @@ if rule_to_strings:
 else:
     result = {"Malicious": "No", "Matched Strings": []}
 
-return result
+print(result)
