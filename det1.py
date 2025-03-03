@@ -1,5 +1,6 @@
 import yara
 import sys
+import json
 
 # Define the path to the YARA rule file
 yara_file = "test.yara"
@@ -14,9 +15,9 @@ def run_yara_on_sample(yara_file, sample_file):
         matches = rules.match(sample_file)
 
         # Extract matched strings
-        rule_to_strings = {match.rule: [s[2].decode('utf-8', 'ignore') for s in match.strings] for match in matches}
+        rule_to_strings = {match.rule: [s[2] for s in match.strings] for match in matches}
 
-        return rule_to_strings
+        return rule_to_strings if rule_to_strings else {}
 
     except yara.Error as e:
         return {"error": str(e)}
@@ -25,12 +26,10 @@ def run_yara_on_sample(yara_file, sample_file):
 rule_to_strings = run_yara_on_sample(yara_file, sample_file)
 
 # Prepare response
-if rule_to_strings:
-    result = {
-        "Malicious": "Yes" if rule_to_strings else "No",
-        "Matched Strings": rule_to_strings if rule_to_strings else []
-    }
-else:
-    result = {"Malicious": "No", "Matched Strings": []}
+result = {
+    "Malicious": "Yes" if rule_to_strings else "No",
+    "Matched Strings": rule_to_strings
+}
 
-print(result)
+# Print JSON-formatted output
+print(json.dumps(result, indent=4))
