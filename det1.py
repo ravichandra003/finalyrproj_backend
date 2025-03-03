@@ -1,4 +1,4 @@
-import subprocess
+import yara
 import sys
 from collections import defaultdict
 
@@ -7,49 +7,48 @@ yara_file = "test.yara"
 sample_file = sys.argv[1]
 
 def run_yara_on_sample(yara_file, sample_file):
-    # Run YARA on the single sample with the -rs option to capture both the rule and the matched strings
-    result = subprocess.run(["yara64.exe", "-s", yara_file, sample_file], capture_output=True, text=True)
-    
-    # Parse the YARA output
-    yara_output = result.stdout.strip().split("\n")
-    
-    # Dictionary to store the rules and their corresponding matched strings
-    rule_to_strings = defaultdict(set)
-    i = 0
-    
-    # Process the YARA output
-    for line in yara_output:
-        if line:
-            parts = line.split()
-            if i == 0:
-                signature = parts[0]
-                i += 1
-            else:
-                matched_string = " ".join(parts[1:])  # Matched string
-                # Store the matched string under the corresponding rule
-                rule_to_strings[signature].add(matched_string)
-    
-    return rule_to_strings
+    try:
+        # Compile the YARA rules
+        rules = yara.compile(filepath=yara_file)
+        
+        # Scan the file with YARA
+        matches = rules.match(sample_file)
 
-# Run the function and collect the distinct strings hit in the YARA rules
+        # Dictionary to store rules and matched strings
+        rule_to_strings = defaultdict(set)
+        
+        # Process matches
+        for match in matches:
+            rule_name = match.rule
+            for string_match in match.strings:
+                _, _, matched_string = string_match
+                rule_to_strings[rule_name].add(matched_string)
+
+        return rule_to_strings
+
+    except Exception as e:
+        return {"error": str(e)}
+
+# Run the function and collect matched strings
 rule_to_strings = run_yara_on_sample(yara_file, sample_file)
 malicious = []
 result = []
 
-# Check if there are any malicious matches and update the result list
-for rule, strings in rule_to_strings.items():
-    if len(rule) > 0:
-        result.append("Malicious: Yes")
-        malicious.extend(strings)
+# Check if there are malicious matches
+if rule_to_strings and "error" not in rule_to_strings:
+    for rule, strings in rule_to_strings.items():
+        if len(rule) > 0:
+            result.append("Malicious: Yes")
+            malicious.extend(strings)
 
 # If no matches were found, set the result to "Malicious: No"
-if len(malicious) > 0:
+if malicious:
     result.append("Matched Strings: " + str(list(set(malicious))))
 else:
     result.append("Malicious: No")
     result.append("Matched Strings: []")
     
-result= "\n".join(result)
+result = "\n".join(result)
 
 # Print the result
 print(result)
