@@ -1,54 +1,36 @@
 import yara
 import sys
-from collections import defaultdict
 
-# Define the path to the YARA file and the sample file
+# Define the path to the YARA rule file
 yara_file = "test.yara"
 sample_file = sys.argv[1]
 
 def run_yara_on_sample(yara_file, sample_file):
     try:
-        # Compile the YARA rules
+        # Compile YARA rules
         rules = yara.compile(filepath=yara_file)
         
-        # Scan the file with YARA
+        # Scan the sample file
         matches = rules.match(sample_file)
 
-        # Dictionary to store rules and matched strings
-        rule_to_strings = defaultdict(set)
-        
-        # Process matches
-        for match in matches:
-            rule_name = match.rule
-            for string_match in match.strings:
-                _, _, matched_string = string_match
-                rule_to_strings[rule_name].add(matched_string)
+        # Extract matched strings
+        rule_to_strings = {match.rule: [s[2].decode('utf-8', 'ignore') for s in match.strings] for match in matches}
 
         return rule_to_strings
 
-    except Exception as e:
+    except yara.Error as e:
         return {"error": str(e)}
 
 # Run the function and collect matched strings
 rule_to_strings = run_yara_on_sample(yara_file, sample_file)
-malicious = []
-result = []
 
-# Check if there are malicious matches
-if rule_to_strings and "error" not in rule_to_strings:
-    for rule, strings in rule_to_strings.items():
-        if len(rule) > 0:
-            result.append("Malicious: Yes")
-            malicious.extend(strings)
-
-# If no matches were found, set the result to "Malicious: No"
-if malicious:
-    result.append("Matched Strings: " + str(list(set(malicious))))
+# Prepare response
+if rule_to_strings:
+    result = {
+        "Malicious": "Yes" if rule_to_strings else "No",
+        "Matched Strings": rule_to_strings if rule_to_strings else []
+    }
 else:
-    result.append("Malicious: No")
-    result.append("Matched Strings: []")
-    
-result = "\n".join(result)
+    result = {"Malicious": "No", "Matched Strings": []}
 
-# Print the result
 print(result)
