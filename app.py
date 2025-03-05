@@ -1,5 +1,3 @@
- 
-
 from flask import Flask, request, jsonify
 import os
 import tempfile
@@ -30,8 +28,7 @@ def upload_file():
         # Run the Python scripts
         result1 = subprocess.run(['python3', 'det1.py', file_path], capture_output=True, text=True)
         result2 = subprocess.run(['python3', 'det2.py', file_path], capture_output=True, text=True)
-        result3 = {"returncode": 0, "stdout": "Testing message2", "stderr": ""}  #subprocess.run(['./yara-master/yara', 'test.yara', file_path], capture_output=True, text=True)
-
+        result3 = {"returncode": 0, "stdout": "Testing message2", "stderr": ""}  # Placeholder for YARA command-line tool
 
         # Check for errors in subprocess results
         results = [result1, result2, result3]
@@ -48,8 +45,8 @@ def upload_file():
 
         # Return multiple results as JSON
         return jsonify({
-            "result1": result1.stdout.strip(),
-            "result2": result2["stdout"].strip(),  # Access dictionary value
+            "result1": result1.stdout.strip(),  # Access stdout attribute of CompletedProcess
+            "result2": result2.stdout.strip(),  # Access stdout attribute of CompletedProcess
             "result3": result3["stdout"].strip()   # Access dictionary value
         })
 
