@@ -21,7 +21,7 @@ def run_yara_on_sample(yara_file, sample_file):
     for match in matches:
         signature = match.rule
         for string_match in match.strings:
-            matched_string = string_match[2].decode('utf-8')  # Extract the matched string
+            matched_string = string_match.data.decode('utf-8')  # Access the 'data' attribute
             rule_to_strings[signature].add(matched_string)
     
     return rule_to_strings
