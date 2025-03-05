@@ -21,11 +21,8 @@ def run_yara_on_sample(yara_file, sample_file):
     for match in matches:
         signature = match.rule
         for string_match in match.strings:
-            # Access the matched string based on the yara-python version
-            if hasattr(string_match, 'data'):  # For newer versions
-                matched_string = string_match.data.decode('utf-8')
-            else:  # For older versions
-                matched_string = string_match[2].decode('utf-8')
+            # Access the matched string using the correct attribute
+            matched_string = string_match[2].decode('utf-8') if isinstance(string_match, tuple) else string_match.data.decode('utf-8')
             rule_to_strings[signature].add(matched_string)
     
     return rule_to_strings
