@@ -25,15 +25,27 @@ echo "Creating m4 directory..."
 mkdir -p m4
 echo "m4 directory created successfully."
 
-# Run the bootstrap script
-echo "Running bootstrap script..."
-./bootstrap.sh
-echo "Bootstrap script completed successfully."
+# Update configure.ac
+echo "Updating configure.ac..."
+autoupdate
+echo "configure.ac updated successfully."
 
 # Regenerate auxiliary files
 echo "Regenerating auxiliary files..."
 autoreconf -f -i
 echo "Auxiliary files regenerated successfully."
+
+# Manually add missing auxiliary files
+echo "Downloading missing auxiliary files..."
+wget https://git.savannah.gnu.org/cgit/config.git/plain/config.guess
+wget https://git.savannah.gnu.org/cgit/config.git/plain/config.sub
+wget https://git.savannah.gnu.org/cgit/config.git/plain/compile
+wget https://git.savannah.gnu.org/cgit/config.git/plain/ar-lib
+wget https://git.savannah.gnu.org/cgit/config.git/plain/missing
+wget https://git.savannah.gnu.org/cgit/config.git/plain/install-sh
+mkdir -p build-aux
+mv config.guess config.sub compile ar-lib missing install-sh build-aux/
+echo "Missing auxiliary files added successfully."
 
 # Configure the build system
 echo "Configuring the build system..."
