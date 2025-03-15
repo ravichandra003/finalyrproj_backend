@@ -1,9 +1,6 @@
 #!/bin/bash
 
-# Navigate to the yara-master directory
-echo "Navigating to yara-master directory..."
-cd yara-master
-echo "Successfully entered yara-master directory."
+
 
 
 
@@ -30,10 +27,7 @@ echo "Building the project..."
 make
 echo "Project built successfully."
 
-# Return to the project root directory
-echo "Returning to the project root directory..."
-cd ..
-echo "Successfully returned to the project root directory."
+
 
 # Install Python dependencies
 echo "Installing Python dependencies..."
