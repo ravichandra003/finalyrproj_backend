@@ -4,15 +4,15 @@
 
 
 # Configure the build system
-echo "Configuring the build system..."
-./bootstrap.sh
-./configure
-echo "Build system configured successfully."
+#echo "Configuring the build system..."
+#./bootstrap.sh
+#./configure
+#echo "Build system configured successfully."
 
 # Build the project
-echo "Building the project..."
-make
-echo "Project built successfully."
+#echo "Building the project..."
+#make
+#echo "Project built successfully."
 
 
 
