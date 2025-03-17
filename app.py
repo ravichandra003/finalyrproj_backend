@@ -33,12 +33,8 @@ def upload_file():
         # Check for errors in subprocess results
         results = [result1, result2, result3]
         for i, result in enumerate(results, start=1):
-            if isinstance(result, dict):  # Handle dictionary placeholders
-                if result.get("returncode", 0) != 0:
-                    return jsonify({"error": f"Script {i} failed", "stderr": result.get("stderr", "").strip()}), 500
-            else:  # Handle subprocess.CompletedProcess objects
-                if result.returncode != 0:
-                    return jsonify({"error": f"Script {i} failed", "stderr": result.stderr.strip()}), 500
+            if result.returncode != 0:
+                return jsonify({"error": f"Script {i} failed", "stderr": result.stderr.strip()}), 500
 
         # Clean up: Remove the temporary file after processing
         os.remove(file_path)
@@ -47,7 +43,7 @@ def upload_file():
         return jsonify({
             "result1": result1.stdout.strip(),  
             "result2": result2.stdout.strip(),  
-            "result3": result3["stdout"].strip()   
+            "result3": result3.stdout.strip()   
         })
 
     except Exception as e:
