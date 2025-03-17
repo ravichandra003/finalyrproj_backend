@@ -28,6 +28,11 @@ cd YARA-with-Similarity_Matching/Embedded_yara-master/yara-master
 echo "Creating 'm4' directory..."
 mkdir -p m4
 
+# Install autoconf-archive for additional macros (including ACX_PTHREAD)
+echo "Installing autoconf-archive..."
+sudo apt-get update
+sudo apt-get install -y autoconf-archive
+
 # Make bootstrap.sh executable and run it
 if [ -f "./bootstrap.sh" ]; then
     echo "Making bootstrap.sh executable..."
