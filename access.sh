@@ -12,8 +12,8 @@ echo "Python dependencies installed successfully."
 # Install Git if not present
 if ! command -v git &> /dev/null; then
     echo "Git is not installed. Installing Git..."
-    sudo apt-get update
-    sudo apt-get install -y git
+    apt-get update
+    apt-get install -y git
     echo "Git installed successfully."
 else
     echo "Git is already installed."
@@ -28,10 +28,9 @@ cd YARA-with-Similarity_Matching/Embedded_yara-master/yara-master
 echo "Creating 'm4' directory..."
 mkdir -p m4
 
-# Install autoconf-archive for additional macros (including ACX_PTHREAD)
-echo "Installing autoconf-archive..."
-sudo apt-get update
-sudo apt-get install -y autoconf-archive
+# Download the ACX_PTHREAD macro manually
+echo "Downloading ACX_PTHREAD macro..."
+curl -o m4/ax_pthread.m4 https://raw.githubusercontent.com/autoconf-archive/autoconf-archive/master/m4/ax_pthread.m4
 
 # Make bootstrap.sh executable and run it
 if [ -f "./bootstrap.sh" ]; then
@@ -44,10 +43,10 @@ else
     exit 1
 fi
 
-# Install autotools and other build dependencies
+# Install build dependencies (without sudo)
 echo "Installing build dependencies..."
-sudo apt-get update
-sudo apt-get install -y autoconf automake libtool flex bison
+apt-get update
+apt-get install -y autoconf automake libtool flex bison
 
 # Make configure executable and run it
 if [ -f "./configure" ]; then
