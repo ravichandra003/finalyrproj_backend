@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Upgrade pip to the latest version
+# Upgrade pip
 echo "Upgrading pip..."
 pip install --upgrade pip
 
@@ -18,6 +18,11 @@ if ! command -v git &> /dev/null; then
 else
     echo "Git is already installed."
 fi
+
+# Install build dependencies (flex, bison, autotools, etc.)
+echo "Installing build dependencies..."
+apt-get update
+apt-get install -y autoconf automake libtool flex bison
 
 # Clone the repository
 echo "Cloning the repository..."
@@ -43,12 +48,7 @@ else
     exit 1
 fi
 
-# Install build dependencies (without sudo)
-echo "Installing build dependencies..."
-apt-get update
-apt-get install -y autoconf automake libtool flex bison
-
-# Make configure executable and run it
+# Configure the build system
 if [ -f "./configure" ]; then
     echo "Making configure executable..."
     chmod +x ./configure
@@ -63,10 +63,9 @@ fi
 echo "Building the project..."
 make
 
-# Run the YARA tool
+# Check if yara executable was built
 if [ -f "./yara" ]; then
-    echo "Running the YARA tool..."
-    ./yara
+    echo "yara executable built successfully."
 else
     echo "Error: yara executable not found. Build may have failed."
     exit 1
