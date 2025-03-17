@@ -24,6 +24,10 @@ echo "Cloning the repository..."
 git clone https://github.com/chapl1n03/YARA-with-Similarity_Matching.git
 cd YARA-with-Similarity_Matching/Embedded_yara-master/yara-master
 
+# Create the 'm4' directory if it doesn't exist
+echo "Creating 'm4' directory..."
+mkdir -p m4
+
 # Make bootstrap.sh executable and run it
 if [ -f "./bootstrap.sh" ]; then
     echo "Making bootstrap.sh executable..."
@@ -34,6 +38,11 @@ else
     echo "Error: bootstrap.sh not found in the current directory."
     exit 1
 fi
+
+# Install autotools and other build dependencies
+echo "Installing build dependencies..."
+sudo apt-get update
+sudo apt-get install -y autoconf automake libtool flex bison
 
 # Make configure executable and run it
 if [ -f "./configure" ]; then
@@ -51,7 +60,12 @@ echo "Building the project..."
 make
 
 # Run the YARA tool
-echo "Running the YARA tool..."
-./yara
+if [ -f "./yara" ]; then
+    echo "Running the YARA tool..."
+    ./yara
+else
+    echo "Error: yara executable not found. Build may have failed."
+    exit 1
+fi
 
 echo "All steps completed successfully!"
