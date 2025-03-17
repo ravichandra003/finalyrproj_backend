@@ -1,11 +1,14 @@
-from flask import Flask, request, jsonify
 import os
+from flask import Flask, request, jsonify
 import tempfile
 from flask_cors import CORS
 import subprocess
 
 app = Flask(__name__)
 CORS(app)
+
+# Get the path to the yara executable from an environment variable
+YARA_PATH = os.getenv('YARA_PATH', './YARA-with-Similarity_Matching/Embedded_yara-master/yara-master/yara')
 
 @app.route('/')
 def index():
@@ -27,7 +30,7 @@ def upload_file():
         # Run the Python scripts
         result1 = subprocess.run(['python3', 'det1.py', file_path], capture_output=True, text=True)
         result2 = subprocess.run(['python3', 'det2.py', file_path], capture_output=True, text=True)
-        result3 = subprocess.run(['./yara', 'test.yara', file_path], capture_output=True, text=True)
+        result3 = subprocess.run([YARA_PATH, 'test.yara', file_path], capture_output=True, text=True)
 
         # Check for errors in subprocess results
         results = [result1, result2, result3]
