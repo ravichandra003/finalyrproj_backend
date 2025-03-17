@@ -3,7 +3,6 @@ import os
 import tempfile
 from flask_cors import CORS
 import subprocess
-import yara  # Import the yara-python library
 
 app = Flask(__name__)
 CORS(app)
