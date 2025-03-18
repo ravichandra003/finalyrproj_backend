@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo "Cleaning up previous build artifacts..."
-rm -rf build/ dist/ *.egg-info/ __pycache__/ .pytest_cache/ .cache/ .venv/
 
 # Upgrade pip
 echo "Upgrading pip..."
