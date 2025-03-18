@@ -34,9 +34,10 @@ def upload_file():
 
         # Run all three processes in parallel
         with ThreadPoolExecutor() as executor:
-            future1 = executor.submit(run_script, ['python3', 'det1.py', file_path])
-            future2 = executor.submit(run_script, ['python3', 'det2.py', file_path])
-            future3 = executor.submit(run_script, [YARA_PATH, 'test.yara', file_path])
+            # Pass both arguments (script and file_path) correctly
+            future1 = executor.submit(run_script, ['python3', 'det1.py', file_path], file_path)
+            future2 = executor.submit(run_script, ['python3', 'det2.py', file_path], file_path)
+            future3 = executor.submit(run_script, [YARA_PATH, 'test.yara', file_path], file_path)
 
             # Wait for all processes to complete and get their results
             result1 = future1.result()
